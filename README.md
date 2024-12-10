@@ -23,13 +23,13 @@ If you have Go installed, you can install EnSync CLI directly using the `go inst
  
 ```bash
 # Install the EnSync CLI tool
-go install github.com/ensync-cli/cmd/ensync@latest
+go install github.com/ensync-cli@latest
 ```
 
 To install a specific version (e.g., v1.0.0):
 
 ```bash
-go install github.com/ensync-cli/cmd/ensync@v1.0.0
+go install github.com/ensync-cli@v1.0.0
 ```
 
 The binary will be installed in your Go binary path (`$GOPATH/bin` or `$GOBIN`).
