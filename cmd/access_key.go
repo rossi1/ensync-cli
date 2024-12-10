@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/ensync-cli/internal/api"
 	"github.com/ensync-cli/internal/domain"
@@ -20,7 +19,6 @@ func newAccessKeyCmd(client *api.Client) *cobra.Command {
 	cmd.AddCommand(
 		newAccessKeyListCmd(client),
 		newAccessKeyCreateCmd(client),
-		newAccessKeyVerifyCmd(client),
 		newAccessKeyPermissionsCmd(client),
 	)
 
@@ -67,22 +65,20 @@ func newAccessKeyListCmd(client *api.Client) *cobra.Command {
 }
 
 func newAccessKeyCreateCmd(client *api.Client) *cobra.Command {
-	var accessFile string
+	var permissionsJSON string
 
 	cmd := &cobra.Command{
 		Use:   "create",
-		Short: "Create a new access key",
+		Short: "Create a new access key with permissions",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var accessKey domain.AccessKey
-			if accessFile != "" {
-				data, err := os.ReadFile(accessFile)
-				if err != nil {
-					return fmt.Errorf("failed to read access file: %w", err)
-				}
+			accessKey := domain.AccessKey{}
 
-				if err := json.Unmarshal(data, &accessKey); err != nil {
-					return fmt.Errorf("failed to parse access JSON: %w", err)
+			var permissions domain.AccessKeyPermissions
+			if permissionsJSON != "" {
+				if err := json.Unmarshal([]byte(permissionsJSON), &permissions); err != nil {
+					return fmt.Errorf("failed to parse permissions JSON: %w", err)
 				}
+				accessKey.Permissions = &permissions
 			}
 
 			createdKey, err := client.CreateAccessKey(context.Background(), &accessKey)
@@ -94,41 +90,8 @@ func newAccessKeyCreateCmd(client *api.Client) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&accessFile, "file", "", "JSON file containing access key configuration")
-
-	return cmd
-}
-
-func newAccessKeyVerifyCmd(client *api.Client) *cobra.Command {
-	var accessKey string
-
-	cmd := &cobra.Command{
-		Use:   "verify",
-		Short: "Verify an access key",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if accessKey == "" {
-				return fmt.Errorf("access key is required")
-			}
-
-			valid, err := client.VerifyAccessKey(context.Background(), accessKey)
-			if err != nil {
-				return fmt.Errorf("failed to verify access key: %w", err)
-			}
-
-			result := struct {
-				Valid bool   `json:"valid"`
-				Key   string `json:"key"`
-			}{
-				Valid: valid,
-				Key:   accessKey,
-			}
-
-			return printJSON(cmd.OutOrStdout(), result)
-		},
-	}
-
-	cmd.Flags().StringVar(&accessKey, "key", "", "Access key to verify")
-	cmd.MarkFlagRequired("key")
+	cmd.Flags().StringVar(&permissionsJSON, "permissions", "", "JSON string representing the permissions")
+	cmd.MarkFlagRequired("name")
 
 	return cmd
 }
@@ -175,7 +138,7 @@ func newAccessKeyGetPermissionsCmd(client *api.Client) *cobra.Command {
 
 func newAccessKeySetPermissionsCmd(client *api.Client) *cobra.Command {
 	var accessKey string
-	var permissionsFile string
+	var permissionsJSON string
 
 	cmd := &cobra.Command{
 		Use:   "set",
@@ -185,21 +148,16 @@ func newAccessKeySetPermissionsCmd(client *api.Client) *cobra.Command {
 				return fmt.Errorf("access key is required")
 			}
 
-			if permissionsFile == "" {
-				return fmt.Errorf("permissions file is required")
-			}
-
-			data, err := os.ReadFile(permissionsFile)
-			if err != nil {
-				return fmt.Errorf("failed to read permissions file: %w", err)
+			if permissionsJSON == "" {
+				return fmt.Errorf("permissions JSON is required")
 			}
 
 			var permissions domain.AccessKeyPermissions
-			if err := json.Unmarshal(data, &permissions); err != nil {
+			if err := json.Unmarshal([]byte(permissionsJSON), &permissions); err != nil {
 				return fmt.Errorf("failed to parse permissions JSON: %w", err)
 			}
 
-			err = client.SetAccessKeyPermissions(context.Background(), accessKey, &permissions)
+			err := client.SetAccessKeyPermissions(context.Background(), accessKey, &permissions)
 			if err != nil {
 				return fmt.Errorf("failed to set permissions: %w", err)
 			}
@@ -210,9 +168,9 @@ func newAccessKeySetPermissionsCmd(client *api.Client) *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&accessKey, "key", "", "Access key")
-	cmd.Flags().StringVar(&permissionsFile, "file", "", "JSON file containing permissions")
+	cmd.Flags().StringVar(&permissionsJSON, "permissions", "", "JSON string representing permissions")
 	cmd.MarkFlagRequired("key")
-	cmd.MarkFlagRequired("file")
+	cmd.MarkFlagRequired("permissions")
 
 	return cmd
 }

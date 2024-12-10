@@ -11,7 +11,6 @@ type AccessKey struct {
 type AccessKeyPermissions struct {
 	Send    []string `json:"send"`
 	Receive []string `json:"receive"`
-	Access  []string `json:"access"`
 }
 
 type AccessKeyList struct {

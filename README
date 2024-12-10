@@ -4,7 +4,9 @@ A command-line interface for interacting with the EnSync config management servi
 
 ## Installation
 
-### From Source
+You can install the EnSync CLI Tool in two ways:
+
+### 1. From Source
 ```bash
 # Clone the repository
 git clone https://github.com/ensync-cli
@@ -16,6 +18,28 @@ make build
 # The binary will be available in bin/ensync
 ```
 
+### 2. Using Go Install
+If you have Go installed, you can install EnSync CLI directly using the `go install` command:
+ 
+```bash
+# Install the EnSync CLI tool
+go install github.com/ensync-cli/cmd/ensync@latest
+```
+
+To install a specific version (e.g., v1.0.0):
+
+```bash
+go install github.com/ensync-cli/cmd/ensync@v1.0.0
+```
+
+The binary will be installed in your Go binary path (`$GOPATH/bin` or `$GOBIN`).
+
+#### Notes:
+1. **Go Version**: `go install` requires Go 1.17 or later.
+2. **Path**: After installation, ensure that `$GOPATH/bin` (or `$GOBIN`) is in your system's `PATH` so that you can run the `ensync` command globally.
+
+This method allows you to easily install and update your CLI tool by simply running `go install`, which is especially useful for developers who already have Go set up on their machines.
+
 ## Configuration
 
 The CLI can be configured using either a configuration file or environment variables.
@@ -26,6 +50,7 @@ Create a config file at `~/.ensync/config.yaml`:
 ```yaml
 base_url: "http://localhost:8080/api/v1/ensync"
 api_key: "your-api-key"
+debug: false
 ```
 
 ### Environment Variables
@@ -49,24 +74,16 @@ ensync event list --order ASC --order-by name
 
 Create event:
 ```bash
-# Create event with payload from file
-cat > event-payload.json << EOF
-{
-    "key1": "value1",
-    "key2": "value2"
-}
-EOF
-
-ensync event create --name "my-event" --payload-file event-payload.json
+ensync event create --name "test-event" --payload '{"key":"value","another":"data"}'
 ```
 
 Update event:
 ```bash
 # Update event name
-ensync event update --id "123" --name "new-name"
+ensync event update --id 123 --name "updated-name"
 
 # Update event payload
-ensync event update --id "123" --payload-file updated-payload.json
+ensync event update --id 123 --payload '{"key":"new-value"}'
 ```
 
 ### Access Key Management
@@ -75,38 +92,21 @@ List access keys:
 ```bash
 # List all access keys
 ensync access-key list
-
-# List with filtering
-ensync access-key list --key "partial-key-match"
 ```
 
 Create access key:
 ```bash
-# Create access key with permissions from file
-cat > permissions.json << EOF
-{
-    "send": ["event1", "event2"],
-    "receive": ["event3"],
-    "access": ["service1"]
-}
-EOF
-
-ensync access-key create --file permissions.json
-```
-
-Verify access key:
-```bash
-# Verify an access key
-ensync access-key verify --key "your-access-key"
+# Create access key with permissions
+ensync access-key create  --permissions '{"send": ["event1"], "receive": ["event2"]}'
 ```
 
 Manage permissions:
 ```bash
 # Get current permissions
-ensync access-key permissions get --key "your-access-key"
+ensync access-key permissions get --key "MyAccessKey"
 
 # Update permissions
-ensync access-key permissions set --key "your-access-key" --file new-permissions.json
+ensync access-key permissions set --key "MyAccessKey" --permissions '{"send": ["event1"], "receive": ["event2"]}'
 ```
 
 ### General Options

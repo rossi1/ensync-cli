@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 
@@ -22,6 +21,7 @@ func newEventCmd(client *api.Client) *cobra.Command {
 		newEventListCmd(client),
 		newEventCreateCmd(client),
 		newEventUpdateCmd(client),
+		newEventGetByNameCmd(client),
 	)
 
 	return cmd
@@ -63,7 +63,7 @@ func newEventListCmd(client *api.Client) *cobra.Command {
 
 func newEventCreateCmd(client *api.Client) *cobra.Command {
 	var name string
-	var payloadFile string
+	var payload string
 
 	cmd := &cobra.Command{
 		Use:   "create",
@@ -73,22 +73,14 @@ func newEventCreateCmd(client *api.Client) *cobra.Command {
 				return fmt.Errorf("name is required")
 			}
 
-			var payload map[string]string
-			if payloadFile != "" {
-				// Read payload from file
-				data, err := os.ReadFile(payloadFile)
-				if err != nil {
-					return fmt.Errorf("failed to read payload file: %w", err)
-				}
-
-				if err := json.Unmarshal(data, &payload); err != nil {
-					return fmt.Errorf("failed to parse payload JSON: %w", err)
-				}
+			var payloadMap map[string]string
+			if err := json.Unmarshal([]byte(payload), &payloadMap); err != nil {
+				return fmt.Errorf("invalid payload JSON: %w", err)
 			}
 
 			event := &domain.Event{
 				Name:    name,
-				Payload: payload,
+				Payload: payloadMap,
 			}
 
 			ctx := context.Background()
@@ -103,42 +95,34 @@ func newEventCreateCmd(client *api.Client) *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&name, "name", "", "Event name")
-	cmd.Flags().StringVar(&payloadFile, "payload-file", "", "Path to JSON file containing payload")
+	cmd.Flags().StringVar(&payload, "payload", "{}", "Event payload in JSON format")
 	cmd.MarkFlagRequired("name")
 
 	return cmd
 }
 
 func newEventUpdateCmd(client *api.Client) *cobra.Command {
-	var id string
+	var id int64
 	var name string
-	var payloadFile string
+	var payload string
 
 	cmd := &cobra.Command{
 		Use:   "update",
 		Short: "Update an existing event definition",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if id == "" {
+			if id == 0 {
 				return fmt.Errorf("id is required")
 			}
 
-			var payload map[string]string
-			if payloadFile != "" {
-				// Read payload from file
-				data, err := os.ReadFile(payloadFile)
-				if err != nil {
-					return fmt.Errorf("failed to read payload file: %w", err)
-				}
-
-				if err := json.Unmarshal(data, &payload); err != nil {
-					return fmt.Errorf("failed to parse payload JSON: %w", err)
-				}
+			var payloadMap map[string]string
+			if err := json.Unmarshal([]byte(payload), &payloadMap); err != nil {
+				return fmt.Errorf("invalid payload JSON: %w", err)
 			}
 
 			event := &domain.Event{
 				ID:      id,
 				Name:    name,
-				Payload: payload,
+				Payload: payloadMap,
 			}
 
 			ctx := context.Background()
@@ -147,15 +131,42 @@ func newEventUpdateCmd(client *api.Client) *cobra.Command {
 				return fmt.Errorf("failed to update event: %w", err)
 			}
 
-			fmt.Printf("Event '%s' updated successfully\n", id)
+			fmt.Printf("Event '%d' updated successfully\n", id)
 			return nil
 		},
 	}
 
-	cmd.Flags().StringVar(&id, "id", "", "Event ID")
+	cmd.Flags().Int64Var(&id, "id", 0, "Event ID")
 	cmd.Flags().StringVar(&name, "name", "", "New event name")
-	cmd.Flags().StringVar(&payloadFile, "payload-file", "", "Path to JSON file containing new payload")
+	cmd.Flags().StringVar(&payload, "payload", "{}", "Event payload in JSON format")
 	cmd.MarkFlagRequired("id")
+
+	return cmd
+}
+
+func newEventGetByNameCmd(client *api.Client) *cobra.Command {
+	var name string
+
+	cmd := &cobra.Command{
+		Use:   "get",
+		Short: "Get event by name",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if name == "" {
+				return fmt.Errorf("name is required")
+			}
+
+			ctx := context.Background()
+			event, err := client.GetEventByName(ctx, name)
+			if err != nil {
+				return fmt.Errorf("failed to get event: %w", err)
+			}
+
+			return printJSON(cmd.OutOrStdout(), event)
+		},
+	}
+
+	cmd.Flags().StringVar(&name, "name", "", "Event name")
+	cmd.MarkFlagRequired("name")
 
 	return cmd
 }
