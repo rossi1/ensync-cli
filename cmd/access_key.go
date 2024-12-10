@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/ensync-cli/internal/api"
-	"github.com/ensync-cli/internal/domain"
+	"github.com/rossi1/ensync-cli/internal/api"
+	"github.com/rossi1/ensync-cli/internal/domain"
 	"github.com/spf13/cobra"
 )
 

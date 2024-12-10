@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ensync-cli/cmd"
+	"github.com/rossi1/ensync-cli/cmd"
 )
 
 func main() {

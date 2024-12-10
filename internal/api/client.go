@@ -14,7 +14,7 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/time/rate"
 
-	"github.com/ensync-cli/internal/domain"
+	"github.com/rossi1/ensync-cli/internal/domain"
 )
 
 type Client struct {

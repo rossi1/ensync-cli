@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/ensync-cli/pkg/version"
+	"github.com/rossi1/ensync-cli/pkg/version"
 	"github.com/spf13/cobra"
 )
 

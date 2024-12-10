@@ -1,4 +1,4 @@
-module github.com/ensync-cli
+module github.com/rossi1/ensync-cli
 
 go 1.23.2
 

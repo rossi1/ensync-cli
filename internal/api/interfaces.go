@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	"github.com/ensync-cli/internal/domain"
+	"github.com/rossi1/ensync-cli/internal/domain"
 )
 
 type APIClient interface {

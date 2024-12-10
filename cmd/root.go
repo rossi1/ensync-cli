@@ -4,8 +4,8 @@ import (
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 
-	"github.com/ensync-cli/internal/api"
-	"github.com/ensync-cli/internal/config"
+	"github.com/rossi1/ensync-cli/internal/api"
+	"github.com/rossi1/ensync-cli/internal/config"
 )
 
 var (
