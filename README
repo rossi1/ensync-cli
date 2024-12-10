@@ -1,0 +1,174 @@
+# EnSync CLI Tool
+
+A command-line interface for interacting with the EnSync config management service.
+
+## Installation
+
+### From Source
+```bash
+# Clone the repository
+git clone https://github.com/ensync-cli
+cd ensync-cli
+
+# Build the binary
+make build
+
+# The binary will be available in bin/ensync
+```
+
+## Configuration
+
+The CLI can be configured using either a configuration file or environment variables.
+
+### Configuration File
+Create a config file at `~/.ensync/config.yaml`:
+
+```yaml
+base_url: "http://localhost:8080/api/v1/ensync"
+api_key: "your-api-key"
+```
+
+### Environment Variables
+```bash
+export ENSYNC_API_KEY="your-api-key"
+export ENSYNC_BASE_URL="http://localhost:8080/api/v1/ensync"
+```
+
+## Usage
+
+### Event Management
+
+List events:
+```bash
+# List events with pagination
+ensync event list --page 0 --limit 10 --order DESC --order-by createdAt
+
+# List events with different ordering
+ensync event list --order ASC --order-by name
+```
+
+Create event:
+```bash
+# Create event with payload from file
+cat > event-payload.json << EOF
+{
+    "key1": "value1",
+    "key2": "value2"
+}
+EOF
+
+ensync event create --name "my-event" --payload-file event-payload.json
+```
+
+Update event:
+```bash
+# Update event name
+ensync event update --id "123" --name "new-name"
+
+# Update event payload
+ensync event update --id "123" --payload-file updated-payload.json
+```
+
+### Access Key Management
+
+List access keys:
+```bash
+# List all access keys
+ensync access-key list
+
+# List with filtering
+ensync access-key list --key "partial-key-match"
+```
+
+Create access key:
+```bash
+# Create access key with permissions from file
+cat > permissions.json << EOF
+{
+    "send": ["event1", "event2"],
+    "receive": ["event3"],
+    "access": ["service1"]
+}
+EOF
+
+ensync access-key create --file permissions.json
+```
+
+Verify access key:
+```bash
+# Verify an access key
+ensync access-key verify --key "your-access-key"
+```
+
+Manage permissions:
+```bash
+# Get current permissions
+ensync access-key permissions get --key "your-access-key"
+
+# Update permissions
+ensync access-key permissions set --key "your-access-key" --file new-permissions.json
+```
+
+### General Options
+
+Debug mode:
+```bash
+# Enable debug output
+ensync --debug event list
+```
+
+Version information:
+```bash
+# Display version
+ensync version
+
+# Get version in JSON format
+ensync version --json
+```
+
+## Common Flags
+
+- `--page`: Page number for pagination (default: 0)
+- `--limit`: Number of items per page (default: 10)
+- `--order`: Sort order (ASC/DESC)
+- `--order-by`: Field to sort by (name/createdAt)
+- `--debug`: Enable debug mode
+- `--config`: Specify custom config file location
+
+## Error Handling
+
+The CLI provides clear error messages and proper exit codes:
+- Exit code 0: Success
+- Exit code 1: General error
+- Exit code 2: Configuration error
+- Exit code 3: API error
+
+## Development
+
+Build:
+```bash
+make build
+```
+
+Run tests:
+```bash
+# Run unit tests
+make test
+
+# Run integration tests
+make test-integration
+```
+
+Lint:
+```bash
+make lint
+```
+
+Release:
+```bash
+make release
+```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

@@ -1,0 +1,25 @@
+linters:
+  enable:
+    - gofmt
+    - govet
+    - errcheck
+    - staticcheck
+    - gosimple
+    - ineffassign
+    - unused
+    - misspell
+    - goimports
+
+run:
+  timeout: 5m
+
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+linters-settings:
+  goimports:
+    local-prefixes: github.com/ensync-cli
+  misspell:
+    locale: US
