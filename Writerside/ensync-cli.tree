@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="ensync-cli"
+                 name="ensync-cli"
+                 start-page="ensync-cli-topic.md">
+
+    <toc-element topic="ensync-cli-topic.md"/>
+</instance-profile>

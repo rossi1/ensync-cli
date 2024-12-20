@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE buildprofiles SYSTEM "https://resources.jetbrains.com/writerside/1.0/build-profiles.dtd">
 <buildprofiles xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/build-profiles.xsd"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <variables>
-        <primary-color>purple</primary-color>
-        <header-logo>ensync-logo.png</header-logo>
-        <product-web-url>https://github.com/rossi1/ensync-cli</product-web-url>
-        <download-title>Get EnSync CLI</download-title>
-        <download-page>https://github.com/rossi1/ensync-cli/releases</download-page>
-        <search-scope>project</search-scope>
-        <generate-sitemap>true</generate-sitemap>
-    </variables>
-    <build-profile instance="cli">
+
+    <variables></variables>
+    <build-profile instance="ensync-cli">
         <variables>
-            <noindex-content>false</noindex-content>
+            <noindex-content>true</noindex-content>
         </variables>
     </build-profile>
+
 </buildprofiles>
