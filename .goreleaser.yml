@@ -1,5 +1,6 @@
 builds:
-  - env:
+  - binary: ensync-cli
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
@@ -9,12 +10,18 @@ builds:
       - amd64
       - arm64
     ldflags:
-      - -X github.com/ensync-cli/pkg/version.version={{ .Version }}
+      - -X github.com/ensync-cli/pkg/version.version={{ .Version | default "dev" }}
 
 archives:
   - format: tar.gz
-    name_template: >-
-      {{ .ProjectName }}_
-      {{- title .Os }}_
-      {{- if eq .Arch "amd64" }}x86_64
-      {{- else }}{{ .Arch }}{{ end }}
+    name_template: "{{ .ProjectName }}_{{- title .Os }}_{{- if eq .Arch \"amd64\" }}x86_64{{- else }}{{ .Arch }}{{ end }}"
+    files:
+      - README.md
+      - LICENSE
+      - examples/
+      - Writerside/
+  - format: zip
+    name_template: "{{ .ProjectName }}_{{- title .Os }}_{{- if eq .Arch \"amd64\" }}x86_64{{- else }}{{ .Arch }}{{ end }}"
+
+checksum:
+  name_template: "checksums.txt"

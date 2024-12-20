@@ -1,1 +1,28 @@
+# Binaries and build output
 bin/
+dist/
+*.exe
+*.out
+*.log
+
+# macOS system files
+.DS_Store
+
+# Go-specific files
+*.test
+*.mod
+*.sum
+
+# GoReleaser
+.release/
+checksums.txt
+
+# IDE and editor specific files
+.idea/
+.vscode/
+*.swp
+
+# General
+*.tmp
+*.bak
+*.old
