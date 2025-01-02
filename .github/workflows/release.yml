@@ -10,12 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: '1.23.2'
+
+      - name: List files
+        run: ls -al
+
+      - name: Go Mod Info
+        run: go list -m all
 
       - name: Run Tests
         run: go test ./...
