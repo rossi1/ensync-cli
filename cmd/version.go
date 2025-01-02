@@ -15,8 +15,6 @@ func newVersionCmd() *cobra.Command {
 			if jsonFormat {
 				return printJSON(cmd.OutOrStdout(), version.Get())
 			}
-
-			cmd.Println(version.String())
 			return nil
 		},
 	}

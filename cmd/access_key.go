@@ -71,17 +71,15 @@ func newAccessKeyCreateCmd(client *api.Client) *cobra.Command {
 		Use:   "create",
 		Short: "Create a new access key with permissions",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			accessKey := domain.AccessKey{}
 
-			var permissions domain.AccessKeyPermissions
+			var permissions *domain.Permissions
 			if permissionsJSON != "" {
 				if err := json.Unmarshal([]byte(permissionsJSON), &permissions); err != nil {
 					return fmt.Errorf("failed to parse permissions JSON: %w", err)
 				}
-				accessKey.Permissions = &permissions
 			}
 
-			createdKey, err := client.CreateAccessKey(context.Background(), &accessKey)
+			createdKey, err := client.CreateAccessKey(context.Background(), permissions)
 			if err != nil {
 				return fmt.Errorf("failed to create access key: %w", err)
 			}
@@ -152,12 +150,12 @@ func newAccessKeySetPermissionsCmd(client *api.Client) *cobra.Command {
 				return fmt.Errorf("permissions JSON is required")
 			}
 
-			var permissions domain.AccessKeyPermissions
+			var permissions *domain.Permissions
 			if err := json.Unmarshal([]byte(permissionsJSON), &permissions); err != nil {
 				return fmt.Errorf("failed to parse permissions JSON: %w", err)
 			}
 
-			err := client.SetAccessKeyPermissions(context.Background(), accessKey, &permissions)
+			err := client.SetAccessKeyPermissions(context.Background(), accessKey, permissions)
 			if err != nil {
 				return fmt.Errorf("failed to set permissions: %w", err)
 			}

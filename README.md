@@ -55,7 +55,7 @@ debug: false
 
 ### Environment Variables
 ```bash
-export ENSYNC_API_KEY="your-api-key"
+export ENSYNC_API_KEY="BjwKUi9EjQtSnR9r9T0MfrrbddIOVCwB"
 export ENSYNC_BASE_URL="http://localhost:8080/api/v1/ensync"
 ```
 
@@ -66,7 +66,7 @@ export ENSYNC_BASE_URL="http://localhost:8080/api/v1/ensync"
 List events:
 ```bash
 # List events with pagination
-ensync event list --page 0 --limit 10 --order DESC --order-by createdAt
+./bin/ensync event list --page 0 --limit 10 --order DESC --order-by createdAt
 
 # List events with different ordering
 ensync event list --order ASC --order-by name
@@ -74,16 +74,19 @@ ensync event list --order ASC --order-by name
 
 Create event:
 ```bash
-ensync event create --name "test-event" --payload '{"key":"value","another":"data"}'
+./bin/ensync event create --name "test-event" --payload '{"key":"value","another":"data"}'
 ```
 
 Update event:
 ```bash
 # Update event name
-ensync event update --id 123 --name "updated-name"
+./bin/ensync event update --id 1 --name "updated/name/name"
 
 # Update event payload
-ensync event update --id 123 --payload '{"key":"new-value"}'
+./bin/ensync event update --id 1 --payload '{"key":"new-value"}'
+
+# Get event payload by Name
+./bin/ensync event get --name "updated/name/name"
 ```
 
 ### Access Key Management
@@ -91,22 +94,22 @@ ensync event update --id 123 --payload '{"key":"new-value"}'
 List access keys:
 ```bash
 # List all access keys
-ensync access-key list
+./bin/ensync access-key list
 ```
 
 Create access key:
 ```bash
 # Create access key with permissions
-ensync access-key create  --permissions '{"send": ["event1"], "receive": ["event2"]}'
+./bin/ensync  access-key create  --permissions '{"send": ["event1"], "receive": ["event2"]}'
 ```
 
 Manage permissions:
 ```bash
 # Get current permissions
-ensync access-key permissions get --key "MyAccessKey"
+./bin/ensync access-key permissions get --key "IeBTeDncBQmDMzJzKblyKfbctvgEKO8L"
 
 # Update permissions
-ensync access-key permissions set --key "MyAccessKey" --permissions '{"send": ["event1"], "receive": ["event2"]}'
+./bin/ensync access-key permissions set --key "IeBTeDncBQmDMzJzKblyKfbctvgEKO8L" --permissions '{"send": ["event12344"], "receive": ["event23445"]}'
 ```
 
 ### General Options
@@ -114,7 +117,7 @@ ensync access-key permissions set --key "MyAccessKey" --permissions '{"send": ["
 Debug mode:
 ```bash
 # Enable debug output
-ensync --debug event list
+./bin/ensync --debug event list
 ```
 
 Version information:

@@ -166,17 +166,18 @@ func (c *Client) UpdateEvent(ctx context.Context, event *domain.Event) error {
 }
 
 func (c *Client) GetEventByName(ctx context.Context, name string) (*domain.Event, error) {
-	query := url.Values{}
-	query.Set("name", name)
+	encodedName := url.PathEscape(name)
 
-	data, err := c.doRequest(ctx, http.MethodGet, fmt.Sprintf("/event/name?%s", query.Encode()), nil, nil)
+	url := fmt.Sprintf("/event/%s", encodedName)
+
+	data, err := c.doRequest(ctx, http.MethodGet, url, nil, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get event by name: %w", err)
+		return nil, fmt.Errorf("failed to get event by name '%s': %w", name, err)
 	}
 
 	var event domain.Event
 	if err := json.Unmarshal(data, &event); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal event: %w", err)
+		return nil, fmt.Errorf("failed to unmarshal event response for name '%s': %w", name, err)
 	}
 
 	return &event, nil
@@ -206,9 +207,9 @@ func (c *Client) ListAccessKeys(ctx context.Context, params *ListParams) (*domai
 	return &response, nil
 }
 
-func (c *Client) CreateAccessKey(ctx context.Context, accessKey *domain.AccessKey) (*domain.AccessKey, error) {
+func (c *Client) CreateAccessKey(ctx context.Context, accessKey *domain.Permissions) (*domain.AccessKey, error) {
 	payload := map[string]interface{}{
-		"permissions": accessKey.Permissions,
+		"permissions": accessKey,
 	}
 
 	data, err := c.doRequest(ctx, http.MethodPost, "/access-key", nil, payload)
@@ -216,40 +217,34 @@ func (c *Client) CreateAccessKey(ctx context.Context, accessKey *domain.AccessKe
 		return nil, fmt.Errorf("failed to create access key: %w", err)
 	}
 
-	var response struct {
-		AccessKey string `json:"accessKey"`
-	}
+	var response *domain.AccessKey
 	if err := json.Unmarshal(data, &response); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response: %w", err)
 	}
 
-	// Return new access key with the generated key
-	return &domain.AccessKey{
-		Key:         response.AccessKey,
-		Permissions: accessKey.Permissions,
-		CreatedAt:   time.Now(), // Server might not return this
-	}, nil
+	return response, nil
 }
 
 func (c *Client) GetAccessKeyPermissions(ctx context.Context, key string) (*domain.AccessKeyPermissions, error) {
-	url := fmt.Sprintf("/access-key/permissions/%s", key)
+	encodedName := url.PathEscape(key)
+
+	url := fmt.Sprintf("/access-key/permissions/%s", encodedName)
 
 	data, err := c.doRequest(ctx, http.MethodGet, url, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get access key permissions: %w", err)
 	}
 
-	var response struct {
-		Permissions *domain.AccessKeyPermissions `json:"permissions"`
-	}
+	var response *domain.AccessKeyPermissions
+
 	if err := json.Unmarshal(data, &response); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response: %w", err)
 	}
 
-	return response.Permissions, nil
+	return response, nil
 }
 
-func (c *Client) SetAccessKeyPermissions(ctx context.Context, key string, permissions *domain.AccessKeyPermissions) error {
+func (c *Client) SetAccessKeyPermissions(ctx context.Context, key string, permissions *domain.Permissions) error {
 	url := fmt.Sprintf("/access-key/permissions/%s", key)
 
 	payload := map[string]interface{}{
