@@ -26,10 +26,10 @@ If you have Go installed, you can install EnSync CLI directly using the `go inst
 go install github.com/rossi1/ensync-cli@latest
 ```
 
-To install a specific version (e.g., v1.0.0):
+To install a specific version (e.g., v1.0.1):
 
 ```bash
-go install github.com/ensync-cli/cmd/ensync@v1.0.0
+go install github.com/ensync-cli/cmd/ensync@v1.0.1
 ```
 
 The binary will be installed in your Go binary path (`$GOPATH/bin` or `$GOBIN`).
@@ -45,13 +45,23 @@ This method allows you to easily install and update your CLI tool by simply runn
 The CLI can be configured using either a configuration file or environment variables.
 
 ### Configuration File
-Create a config file at `~/.ensync/config.yaml`:
+To simplify the configuration, add the environment variables to your shell configuration file:
 
-```yaml
-base_url: "http://localhost:8080/api/v1/ensync"
-api_key: "your-api-key"
-debug: false
-```
+1. Open your shell configuration file (e.g., `~/.bashrc`, `~/.zshrc`, or `~/.bash_profile`):
+   ```bash
+   nano ~/.bashrc
+   ```
+
+2. Add the following lines:
+   ```bash
+   export ENSYNC_BASE_URL="http://localhost:8080/api/v1/ensync" # EnSync's config manager is hosted on port 8080 by default
+   export ENSYNC_DEBUG=false
+   ```
+
+3. Save the file and apply the changes:
+   ```bash
+   source ~/.bashrc
+   ```
 
 ### Environment Variables
 ```bash
