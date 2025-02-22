@@ -66,27 +66,27 @@ export ENSYNC_BASE_URL="http://localhost:8080/api/v1/ensync"
 List events:
 ```bash
 # List events with pagination
-./bin/ensync event list --page 0 --limit 10 --order DESC --order-by createdAt
+./bin/ensync --access-key {access-key} event list  --page 0 --limit 10 --order DESC --order-by createdAt
 
 # List events with different ordering
-ensync event list --order ASC --order-by name
+./bin/ensync --access-key {access-key} event list --order ASC --order-by name
 ```
 
 Create event:
 ```bash
-./bin/ensync event create --name "test-event" --payload '{"key":"value","another":"data"}'
+./bin/ensync event create --access-key {access-key} --name "test-event" --payload '{"key":"value","another":"data"}'
 ```
 
 Update event:
 ```bash
 # Update event name
-./bin/ensync event update --id 1 --name "updated/name/name"
+./bin/ensync --access-key {access-key} event update  --id 1 --name "updated/name/name"
 
 # Update event payload
-./bin/ensync event update --id 1 --payload '{"key":"new-value"}'
+./bin/ensync --access-key {your-access-key} event update  --id 1 --payload '{"key":"new-value"}'
 
 # Get event payload by Name
-./bin/ensync event get --name "updated/name/name"
+./bin/ensync --access-key {your-access-key} event get --name "updated/name/name"
 ```
 
 ### Access Key Management
@@ -94,22 +94,22 @@ Update event:
 List access keys:
 ```bash
 # List all access keys
-./bin/ensync access-key list
+./bin/ensync --access-key {access-key} access-key list 
 ```
 
 Create access key:
 ```bash
 # Create access key with permissions
-./bin/ensync  access-key create  --permissions '{"send": ["event1"], "receive": ["event2"]}'
+./bin/ensync --access-key {access-key} access-key create --permissions '{"send": ["event1"], "receive": ["event2"]}'
 ```
 
 Manage permissions:
 ```bash
 # Get current permissions
-./bin/ensync access-key permissions get --key "IeBTeDncBQmDMzJzKblyKfbctvgEKO8L"
+./bin/ensync --access-key {access-key} access-key permissions get --key {access-key}
 
 # Update permissions
-./bin/ensync access-key permissions set --key "IeBTeDncBQmDMzJzKblyKfbctvgEKO8L" --permissions '{"send": ["event12344"], "receive": ["event23445"]}'
+./bin/ensync --access-key {access-key} access-key permissions set --key {access-key} --permissions '{"send": ["event1"], "receive": ["event2"]}'
 ```
 
 ### General Options
