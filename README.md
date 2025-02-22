@@ -54,7 +54,7 @@ To simplify the configuration, add the environment variables to your shell confi
 
 2. Add the following lines:
    ```bash
-   export ENSYNC_BASE_URL="http://localhost:8080/api/v1/ensync" # EnSync's config manager is hosted on port 8080 by default
+   export ENSYNC_BASE_URL="http://{url}/api/v1/ensync"
    export ENSYNC_DEBUG=false
    ```
 
@@ -66,7 +66,7 @@ To simplify the configuration, add the environment variables to your shell confi
 ### Environment Variables
 ```bash
 export ENSYNC_API_KEY="BjwKUi9EjQtSnR9r9T0MfrrbddIOVCwB"
-export ENSYNC_BASE_URL="http://localhost:8080/api/v1/ensync"
+export ENSYNC_BASE_URL="http://{url}/api/v1/ensync"
 ```
 
 ## Usage
